@@ -1,0 +1,172 @@
+{
+  "name": "reservas-app",
+  "description": "Sistema de reservas multi-sede (salas y estacionamientos) para Santiago, La Serena y futuras sucursales.",
+  "version": "1.0.0",
+  "env": {
+    "file": ".env",
+    "required": [
+      "DATABASE_URL",
+      "JWT_SECRET",
+      "NEXT_PUBLIC_API_URL",
+      "SMTP_HOST",
+      "SMTP_PORT",
+      "SMTP_USER",
+      "SMTP_PASS"
+    ]
+  },
+  "tasks": {
+    "setup": {
+      "description": "Instala dependencias frontend y backend",
+      "steps": [
+        "cd backend && npm install",
+        "cd ../frontend && npm install"
+      ]
+    },
+    "db:reset": {
+      "description": "Recrea la base de datos desde cero",
+      "steps": [
+        "docker compose up -d db",
+        "timeout 10",
+        "cd backend && npx typeorm migration:revert",
+        "cd backend && npx typeorm migration:run"
+      ]
+    },
+    "db:migrate": {
+      "description": "Aplica migraciones a la base",
+      "steps": [
+        "docker compose up -d db",
+        "timeout 5",
+        "cd backend && npx typeorm migration:run"
+      ]
+    },
+    "db:seed": {
+      "description": "Carga datos iniciales (Santiago/La Serena, reglas base)",
+      "steps": [
+        "cd backend && npm run seed"
+      ]
+    },
+    "dev:up": {
+      "description": "Levanta el entorno de desarrollo (DB + API + Web)",
+      "steps": [
+        "docker compose up -d"
+      ]
+    },
+    "dev:down": {
+      "description": "Apaga contenedores de desarrollo",
+      "steps": [
+        "docker compose down"
+      ]
+    },
+    "lint": {
+      "description": "Linter en frontend y backend",
+      "steps": [
+        "cd backend && npm run lint",
+        "cd ../frontend && npm run lint"
+      ]
+    },
+    "test": {
+      "description": "Tests unitarios y de integración",
+      "steps": [
+        "cd backend && npm test",
+        "cd ../frontend && npm test"
+      ]
+    },
+    "build": {
+      "description": "Build de producción (frontend y backend)",
+      "steps": [
+        "cd backend && npm run build",
+        "cd ../frontend && npm run build"
+      ]
+    },
+    "prod:up": {
+      "description": "Levanta todo en modo producción (Docker Compose)",
+      "steps": [
+        "docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build"
+      ]
+    },
+    "prod:down": {
+      "description": "Detiene producción",
+      "steps": [
+        "docker compose -f docker-compose.yml -f docker-compose.prod.yml down"
+      ]
+    },
+    "deploy": {
+      "description": "Despliegue a ambiente remoto",
+      "steps": [
+        "echo 'Configurar pipeline CI/CD o script de deploy específico del proveedor'"
+      ]
+    },
+    "site:add": {
+      "description": "Agrega una sede nueva con reglas base",
+      "inputs": {
+        "SITE_ID": "ID de la sede (ej. LSC, SCL, ANF)",
+        "SITE_NAME": "Nombre de la sede (ej. La Serena)",
+        "TZ": "Zona horaria IANA (ej. America/Santiago)"
+      },
+      "steps": [
+        "cd backend && node scripts/site_add.js --id ${SITE_ID} --name \"${SITE_NAME}\" --tz ${TZ}"
+      ]
+    },
+    "resources:bulk": {
+      "description": "Carga masiva de recursos desde CSV",
+      "inputs": {
+        "CSV_PATH": "Ruta al CSV de recursos"
+      },
+      "steps": [
+        "cd backend && node scripts/resources_bulk_import.js --file ${CSV_PATH}"
+      ]
+    },
+    "rules:set": {
+      "description": "Define/actualiza reglas por sede/tipo (JSON)",
+      "inputs": {
+        "SITE_ID": "ID de la sede",
+        "RULES_JSON": "Ruta al JSON de reglas"
+      },
+      "steps": [
+        "cd backend && node scripts/rules_set.js --site ${SITE_ID} --file ${RULES_JSON}"
+      ]
+    },
+    "logs": {
+      "description": "Ver logs de todos los servicios",
+      "steps": [
+        "docker compose logs -f"
+      ]
+    },
+    "db:backup": {
+      "description": "Crear backup de la base de datos",
+      "steps": [
+        "docker exec reservas_db pg_dump -U reservas_user -d reservas_db > backup_$(date +%Y%m%d_%H%M%S).sql"
+      ]
+    }
+  },
+  "templates": {
+    "csv:resources": {
+      "description": "Plantilla CSV para importar recursos",
+      "content": "site_id,resource_id,resource_type,nombre,capacidad,activo\nSCL,SCL-S1,sala,Sala 1,,true\nSCL,SCL-S2,sala,Sala 2,,true\nSCL,SCL-S3,sala,Sala 3,,true\nSCL,SCL-S4,sala,Sala 4,,true\nSCL,SCL-P01,parking,Parking 01,,true\nSCL,SCL-P02,parking,Parking 02,,true\nSCL,SCL-P03,parking,Parking 03,,true\nSCL,SCL-P04,parking,Parking 04,,true\nSCL,SCL-P05,parking,Parking 05,,true\nSCL,SCL-P06,parking,Parking 06,,true\nSCL,SCL-P07,parking,Parking 07,,true\nSCL,SCL-P08,parking,Parking 08,,true\nSCL,SCL-P09,parking,Parking 09,,true\nSCL,SCL-P10,parking,Parking 10,,true\nLSC,LSC-S1,sala,Sala 1,,true\nLSC,LSC-S2,sala,Sala 2,,true\nLSC,LSC-S3,sala,Sala 3,,true\nLSC,LSC-S4,sala,Sala 4,,true\nLSC,LSC-P01,parking,Parking 01,,true\nLSC,LSC-P02,parking,Parking 02,,true\nLSC,LSC-P03,parking,Parking 03,,true\nLSC,LSC-P04,parking,Parking 04,,true\nLSC,LSC-P05,parking,Parking 05,,true\nLSC,LSC-P06,parking,Parking 06,,true\nLSC,LSC-P07,parking,Parking 07,,true\nLSC,LSC-P08,parking,Parking 08,,true\nLSC,LSC-P09,parking,Parking 09,,true\nLSC,LSC-P10,parking,Parking 10,,true"
+    },
+    "json:rules": {
+      "description": "Plantilla de reglas por sede/tipo",
+      "content": "{\n  \"sala\": {\n    \"horario\": [\"08:00-20:00\"],\n    \"min\": 30,\n    \"max\": 180,\n    \"buffer\": 10,\n    \"limite_dia\": 2,\n    \"anticipacion_dias\": 30\n  },\n  \"parking\": {\n    \"horario\": [\"08:00-20:00\"],\n    \"min\": 30,\n    \"max\": 600,\n    \"buffer\": 0,\n    \"limite_dia\": 2,\n    \"anticipacion_dias\": 30\n  }\n}"
+    }
+  },
+  "docs": {
+    "gettingStarted": [
+      "warp setup",
+      "cp .env.example .env  # completa credenciales",
+      "warp db:migrate",
+      "warp db:seed",
+      "warp dev:up  # Frontend http://localhost:3000 | Backend http://localhost:4000"
+    ],
+    "addLaSerena20Parkings": [
+      "warp templates csv:resources > resources_lsc_20.csv",
+      "## Edita y agrega LSC-P11..LSC-P20 en el CSV",
+      "warp resources:bulk --CSV_PATH=resources_lsc_20.csv"
+    ],
+    "addNewSiteExample": [
+      "warp site:add --SITE_ID=ANF --SITE_NAME=\"Antofagasta\" --TZ=America/Santiago",
+      "echo '{\"sala\":{\"horario\":[\"08:30-19:00\"],\"min\":30,\"max\":180,\"buffer\":10,\"limite_dia\":2,\"anticipacion_dias\":30},\"parking\":{\"horario\":[\"07:00-21:00\"],\"min\":30,\"max\":600,\"buffer\":0,\"limite_dia\":2,\"anticipacion_dias\":30}}' > rules_anf.json",
+      "warp rules:set --SITE_ID=ANF --RULES_JSON=rules_anf.json",
+      "warp resources:bulk --CSV_PATH=resources_anf.csv"
+    ]
+  }
+}
