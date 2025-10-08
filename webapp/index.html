@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-gray-50">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Meta tags para SEO -->
+  <meta name="description" content="Sistema de reservas multi-sede para gestionar salas de reuniones y estacionamientos" />
+  <meta name="keywords" content="reservas, salas, reuniones, estacionamientos, gestión, empresa" />
+  <meta name="author" content="Sistema de Reservas" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Sistema de Reservas Multi-Sede" />
+  <meta property="og:description" content="Gestiona reservas de salas y estacionamientos en múltiples sedes corporativas" />
+  <meta property="og:image" content="/og-image.png" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sistema de Reservas Multi-Sede" />
+  <meta name="twitter:description" content="Gestiona reservas de salas y estacionamientos en múltiples sedes corporativas" />
+  <meta name="twitter:image" content="/og-image.png" />
+  
+  <!-- Preconnect para mejor performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Reservas" />
+  
+  <!-- Manifest para PWA -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <title>Sistema de Reservas Multi-Sede</title>
+</head>
+<body class="h-full">
+  <!-- Punto de entrada de la aplicación Vue -->
+  <div id="app"></div>
+  
+  <!-- Loading fallback mientras carga la aplicación -->
+  <noscript>
+    <div style="
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #f9fafb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #374151;
+      text-align: center;
+      padding: 2rem;
+    ">
+      <div>
+        <h1 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+          Sistema de Reservas
+        </h1>
+        <p style="margin-bottom: 1rem;">
+          Esta aplicación requiere JavaScript para funcionar correctamente.
+        </p>
+        <p style="font-size: 0.875rem; color: #6b7280;">
+          Por favor, habilita JavaScript en tu navegador y recarga la página.
+        </p>
+      </div>
+    </div>
+  </noscript>
+  
+  <!-- Script principal de la aplicación -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
